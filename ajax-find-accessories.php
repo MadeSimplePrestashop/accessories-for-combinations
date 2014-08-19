@@ -1,0 +1,48 @@
+<?php
+
+require_once(dirname(__FILE__) . '../../../config/config.inc.php');
+require_once(dirname(__FILE__) . '../../../init.php');
+
+//if (!Tools::getValue('ajax') || Tools::getValue('token') != sha1(_COOKIE_KEY_.'rpmoreproductscontentmoduleexpand'))
+//  die('INVALID TOKEN');
+require_once(dirname(__FILE__) . '/models/afc.php');
+
+$id_product = Tools::getValue('id_product');
+$id_product_attribute = Tools::getValue('id_product_attribute');
+$products = afc::getProductAttributeAccessories($id_product, $id_product_attribute);
+$accessories = array();
+foreach ($products as $key => $p) {
+    $product = new Product($p['id_product_2'], false, Context::getContext()->language->id, Context::getContext()->shop->id);
+    $attributes = $product->getAttributeCombinationsById($p['id_product_attribute_2'], Context::getContext()->language->id);
+    //image
+    $product->attributes = $attributes;
+
+    $product->images = Image::getImages(Context::getContext()->language->id, $p['id_product_2'], $p['id_product_attribute_2']);
+    if (!$product->images)
+        $product->images = array(0 => Product::getCover($p['id_product_2']));
+    $product->id_product = $p['id_product_2'];
+    $product->id_product_attribute = $id_product_attribute;
+    $tmp = array();
+    foreach ($attributes as $row) {
+        $tmp[] = str_replace(Configuration::get('PS_ATTRIBUTE_ANCHOR_SEPARATOR'), '_', Tools::link_rewrite(str_replace(array(',', '.'), '-', $row['group_name']))) . Configuration::get('PS_ATTRIBUTE_ANCHOR_SEPARATOR') . Tools::link_rewrite(str_replace(array(',', '.'), '-', $row['attribute_name']));
+    }
+    $product->url_hash = "#/" . implode('/', $tmp);
+    $accessories[] = $product;
+}
+
+if (empty($accessories)) {
+    echo json_encode(array(
+        'response' => 'false'
+    ));
+    return;
+}
+
+Context::getContext()->smarty->assign(array('accessories' => $accessories));
+//return $this->context->smarty->fetch(dirname(__FILE__).'/views/templates/admin/configuration.tpl');
+echo json_encode(array(
+    'response' => 'ok',
+    'template' => Context::getContext()->smarty->fetch(dirname(__FILE__) . '/product_footer_template.tpl')
+));
+
+die();
+?>
