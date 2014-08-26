@@ -29,8 +29,7 @@ class accessoriesforcombinations extends Module {
             return false;
 
         if (
-                !$this->registerHook('productTab')
-                OR ! $this->registerHook('productTabContent')
+                !$this->registerHook('extraRight')
                 OR ! $this->registerHook('actionProductUpdate')
                 OR ! $this->registerHook('displayBackOfficeFooter')
         )
@@ -47,8 +46,7 @@ class accessoriesforcombinations extends Module {
             return false;
 
         if (
-                !$this->registerHook('productTab')
-                OR ! $this->registerHook('productTabContent')
+                !$this->registerHook('extraRight')
                 OR ! $this->unregisterHook('actionProductUpdate')
                 OR ! $this->unregisterHook('displayBackOfficeFooter')
         )
@@ -111,20 +109,27 @@ class accessoriesforcombinations extends Module {
         return $this->display(__FILE__, 'backofficefooter.tpl');
     }
 
-    public function hookProductActions($params) {
+    private function load_template() {
+        if (Cache::retrieve(__CLASS__ . 'c'))
+            return;
+        Cache::store(__CLASS__ . 'c', 1);
         return $this->display(__FILE__, 'product_tab_content.tpl');
+    }
+
+    public function hookProductActions($params) {
+       return $this->load_template();
     }
 
     public function hookExtraRight($params) {
-        return $this->display(__FILE__, 'product_tab_content.tpl');
+        return $this->load_template();
     }
 
     public function hookExtraLeft($params) {
-        return $this->display(__FILE__, 'product_tab_content.tpl');
+        return $this->load_template();
     }
 
     public function hookProductFooter($params) {
-        return $this->display(__FILE__, 'product_tab_content.tpl');
+        return $this->load_template();
     }
 
     public function hookProductTab($params) {
@@ -132,7 +137,7 @@ class accessoriesforcombinations extends Module {
     }
 
     public function hookProductTabContent($params) {
-        return $this->display(__FILE__, 'product_tab_content.tpl');
+        return $this->load_template();
     }
 
     private function runSql($sql) {
