@@ -1,5 +1,5 @@
 <div class="afc-case">
-    <h4>{l s='Alternatívne produkty'}</h4>
+    <h4>{l s='Accessories'}</h4>
     <ul class="afc">
 
     </ul>
