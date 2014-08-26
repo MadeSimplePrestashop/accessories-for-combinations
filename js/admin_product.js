@@ -1,18 +1,69 @@
+
 $(document).ready(function() {
-    $(document).on('click', "#combinations-list a.edit.btn", function() {
-        $('#ResetBtn').closest('.panel-footer').before('<hr>').before($('#accessoriesforcombinations_form').detach());
-        $('#accessoriesforcombinations_form').show();
-        $('#accessoriesforcombinations_form .afc-line:not(:last)').remove();
-        var id_product_attribute = $('#id_product_attribute').val();
-        var obj = $('.afc_id_product_search:last');
-        var line = obj.parents('.afc-line:first');
-        $.each(afc_accessories[id_product_attribute], function(i, item) {
-            var obj2 = line.clone().prependTo(obj.parents('.afc-form:first'));
-            obj2.find('.afc_id_product_search').removeClass('ac_input').val(item.name);
-            obj2.find('.afc_id_product').val(item.id_product)
-            addAfcProduct(item.id_product, item.name, obj2.find('.afc_id_product_search'), item.id_product_attribute)
+
+    $.fn.watch = function(id, fn) {
+
+        return this.each(function() {
+
+            var self = this;
+
+            var oldVal = self[id];
+            $(self).data(
+                    'watch_timer',
+                    setInterval(function() {
+                        if (self[id] !== oldVal) {
+                            fn.call(self, id, oldVal, self[id]);
+                            oldVal = self[id];
+                        }
+                    }, 100)
+                    );
+
         });
 
+        return self;
+    };
+
+    $.fn.unwatch = function(id) {
+
+        return this.each(function() {
+            clearInterval($(this).data('watch_timer'));
+        });
+
+    };
+
+    $.fn.valuechange = function(fn) {
+        return this.bind('valuechange', fn);
+    };
+
+    $.event.special.valuechange = {
+        setup: function() {
+
+            $(this).watch('value', function() {
+                $.event.handle.call(this, {type: 'valuechange'});
+            });
+
+        },
+        teardown: function() {
+            $(this).unwatch('value');
+        }
+
+    };
+
+    $('#id_product_attribute').bind('valuechange', function(e) {
+        if ($('#accessoriesforcombinations_form').is(':hidden')) {
+            $('#ResetBtn').closest('.panel-footer').before($('#accessoriesforcombinations_form').detach());
+            $('#accessoriesforcombinations_form').show();
+            $('#accessoriesforcombinations_form .afc-line:not(:last)').remove();
+            var id_product_attribute = $('#id_product_attribute').val();
+            var obj = $('.afc_id_product_search:last');
+            var line = obj.parents('.afc-line:first');
+            $.each(afc_accessories[id_product_attribute], function(i, item) {
+                var obj2 = line.clone().prependTo(obj.parents('.afc-form:first'));
+                obj2.find('.afc_id_product_search').removeClass('ac_input').val(item.name);
+                obj2.find('.afc_id_product').val(item.id_product)
+                addAfcProduct(item.id_product, item.name, obj2.find('.afc_id_product_search'), item.id_product_attribute)
+            });
+        }
     });
 
     $(document).on('click', '.afc_product_remove', function(e) {

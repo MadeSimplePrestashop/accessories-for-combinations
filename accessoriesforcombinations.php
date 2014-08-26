@@ -66,23 +66,24 @@ class accessoriesforcombinations extends Module {
         if (Cache::retrieve(__FUNCTION__ . 'c'))
             return;
 
-        if (!Tools::getIsset('id_product_attribute') || !Tools::getIsset('id_product_attribute'))
+        if (!Tools::getIsset('id_product_attribute'))
             return;
-
+        
         $id_product_1 = Tools::getValue('id_product');
         $id_product_attribute_1 = Tools::getValue('id_product_attribute');
 
         $afc_id_product_search = Tools::getValue('afc_id_product_search');
         $afc_id_product = Tools::getValue('afc_id_product');
-
+        
         if (!is_array($afc_id_product_search) || !is_array($afc_id_product))
             return;
+        
         $afc_id_product_attribute = Tools::getValue('afc_id_product_attribute');
         afc::deleteFromAccessories($id_product_1, $id_product_attribute_1);
         foreach ($afc_id_product_search as $key => $product_name) {
             if (empty($product_name) || empty($afc_id_product[$key]))
                 continue;
-            $sql = 'INSERT INTO `' . _DB_PREFIX_ . afc::$definition['table_name'] . '`
+            $sql = 'INSERT INTO `' . _DB_PREFIX_ . afc::$definition['table'] . '`
                     VALUES(null,"' . (int) $id_product_1 . '","' . (int) $id_product_attribute_1 . '","' . (int) $afc_id_product[$key] . '","' . (int) $afc_id_product_attribute[$key] . '")';
             Db::getInstance()->execute($sql);
         }
@@ -94,7 +95,7 @@ class accessoriesforcombinations extends Module {
         $id_product = Tools::getValue('id_product');
         if (get_class(Context::getContext()->controller) != 'AdminProductsController' OR $id_product == 0)
             return;
-
+        
         $accessories = afc::getProductAccessories($id_product);
         $attrs = array();
         foreach (array_reverse($accessories) as $key => $a) {
@@ -113,7 +114,29 @@ class accessoriesforcombinations extends Module {
         return $this->display(__FILE__, 'backofficefooter.tpl');
     }
 
+    // ---------------  Core functions -------------------------------------------
+    // ---------------  HOOKS -------------------------------------------
+    public function hookProductTab($params) {
+        $this->context->smarty->assign(array(
+            'oleafcb_bootstrap' => (version_compare('1.6', _PS_VERSION_) <= 0) ? 1 : 0,
+        ));
+        return $this->display(__FILE__, 'product_tab.tpl');
+    }
+
+    public function hookProductTabContent($params) {
+        $id_lang = isset(Context::getContext()->cookie->id_lang) ? Context::getContext()->cookie->id_lang : Configuration::get('CONFIG_LANG_DEFAULT');
+        $values = Oleafeaturescombi::getFeatureValuesOfProductCombinations(Tools::getValue('id_product'), $id_lang);
+        //return '<pre>'.print_r($values, true).'</pre>';
+        $this->context->smarty->assign(array(
+            'featurecombis' => $values,
+            'oleafcb_bootstrap' => (version_compare('1.6', _PS_VERSION_) <= 0) ? 1 : 0,
+        ));
+
+        return $this->display(__FILE__, 'product_tab_content.tpl');
+    }
+
     public function getContent() {
+        
         $path = '../modules/' . $this->name . '/';
         $lang = new Language($this->context->cookie->id_lang);
         $filename = 'readme_' . $lang->iso_code . '.pdf';
