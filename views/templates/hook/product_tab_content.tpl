@@ -1,12 +1,15 @@
-<div class="afc-case">
-    <h4>{l s='Accessories'}</h4>
-    <ul class="afc">
+<section class="page-product-box">
+    <div class="afc-case block products_block accessories-block clearfix">
+        <h3 class="page-product-heading">{l s='Accessories'}</h3>
+        <ul class="afc">
 
-    </ul>
-</div>
+        </ul>
+    </div>
+</section>
 <script>
     $(document).ready(function() {
-        $('.afc-case').detach().appendTo('.pb-left-column');
+        // remove comment and move to whenever you want :)
+        //$('.afc-case').detach().appendTo('.pb-left-column');
         var temp_updateDisplay = updateDisplay;
         updateDisplay = function() {
             //event.preventDefault();
@@ -38,7 +41,3 @@
     })
 
 </script>
-
-<style type="text/css">
-
-</style>
