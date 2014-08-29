@@ -95,7 +95,7 @@ class accessoriesforcombinations extends Module {
 
         $accessories = afc::getProductAccessories($id_product);
         $attrs = array();
-        foreach (array_reverse($accessories) as $key => $a) {
+        foreach (array_reverse($accessories) as $a) {
             $product_name = Product::getProductName($a['id_product_2'], null, Context::getContext()->language->id);
             $attrs[$a['id_product_attribute_1']][] = array('id_product' => $a['id_product_2'], 'id_product_attribute' => $a['id_product_attribute_2'], 'name' => $product_name);
         }

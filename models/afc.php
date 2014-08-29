@@ -23,7 +23,6 @@ class afc extends ObjectModel {
     );
 
     public static function getProductAccessories($id_product) {
-        $context = Context::getContext();
         $sql = 'SELECT *
 				FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
 				WHERE `id_product_1` = ' . (int) $id_product;
@@ -31,7 +30,6 @@ class afc extends ObjectModel {
     }
 
     public static function getProductAttributeAccessories($id_product, $id_product_attribute) {
-        $context = Context::getContext();
         $sql = 'SELECT *
 				FROM `' . _DB_PREFIX_ . self::$definition['table'] . '`
 				WHERE `id_product_1` = ' . (int) $id_product . ' AND id_product_attribute_1= ' . (int) $id_product_attribute;
