@@ -16,7 +16,7 @@ class accessoriesforcombinations extends Module {
 
     public function __construct() {
         $this->name = 'accessoriesforcombinations';
-        $this->version = '1.0.1';
+        $this->version = '1.0';
         $this->tab = 'front_office_features';
         $this->author = 'kuzmany.biz/prestashop';
         $this->module_key = 'fb368f630844011a03b5f0a9a2fd75aa';
