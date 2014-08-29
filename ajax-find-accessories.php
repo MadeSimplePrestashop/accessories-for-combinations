@@ -31,7 +31,7 @@ foreach ($products as $key => $p) {
 }
 
 if (empty($accessories)) {
-    echo json_encode(array(
+    echo Tools::jsonEncode(array(
         'response' => 'false'
     ));
     return;
@@ -39,7 +39,7 @@ if (empty($accessories)) {
 
 Context::getContext()->smarty->assign(array('accessories' => $accessories));
 //return $this->context->smarty->fetch(dirname(__FILE__).'/views/templates/admin/configuration.tpl');
-echo json_encode(array(
+echo Tools::jsonEncode(array(
     'response' => 'ok',
     'template' => Context::getContext()->smarty->fetch(dirname(__FILE__) . '/views/templates/hook/product_footer_template.tpl')
 ));

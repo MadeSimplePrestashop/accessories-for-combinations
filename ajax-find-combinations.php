@@ -11,7 +11,7 @@ $error = '';
 $combinations = array();
 
 if (!$id_product || !is_numeric($id_product)) {
-    echo json_encode(array(
+    echo Tools::jsonEncode(array(
         'response' => 'false'
     ));
     die();
@@ -29,7 +29,7 @@ if ($attributes) {
         $combinations[$row['id_product_attribute']]['attributes_names'][$row['id_attribute_group']] = $row['attribute_name'];
     }
 }
-echo json_encode(array(
+echo Tools::jsonEncode(array(
     'response' => 'ok',
     'combinations' => $combinations
 ));

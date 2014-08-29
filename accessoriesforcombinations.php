@@ -101,7 +101,7 @@ class accessoriesforcombinations extends Module {
         }
         $this->context->smarty->assign(array(
             'addJS' => ' 
-            var afc_accessories = ' . json_encode($attrs) . ';
+            var afc_accessories = ' . Tools::jsonEncode($attrs) . ';
              var baseUri = "' . __PS_BASE_URI__ . '";
              var baseDir = "' . __PS_BASE_URI__ . '";
              var afc_token = "' . sha1(_COOKIE_KEY_ . $this->module->name) . '";'
