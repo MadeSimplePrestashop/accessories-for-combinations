@@ -41,7 +41,7 @@ Context::getContext()->smarty->assign(array('accessories' => $accessories));
 //return $this->context->smarty->fetch(dirname(__FILE__).'/views/templates/admin/configuration.tpl');
 echo json_encode(array(
     'response' => 'ok',
-    'template' => Context::getContext()->smarty->fetch(dirname(__FILE__) . '/product_footer_template.tpl')
+    'template' => Context::getContext()->smarty->fetch(dirname(__FILE__) . '/views/templates/hook/product_footer_template.tpl')
 ));
 
 die();

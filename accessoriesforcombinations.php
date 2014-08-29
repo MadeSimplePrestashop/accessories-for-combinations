@@ -16,6 +16,7 @@ class accessoriesforcombinations extends Module {
         $this->version = '1.0';
         $this->tab = 'front_office_features';
         $this->author = 'kuzmany.biz/prestashop';
+        $this->module_key = 'fb368f630844011a03b5f0a9a2fd75aa';
         parent::__construct();
 
         $this->displayName = $this->l('Accessories for combinations');
@@ -35,7 +36,7 @@ class accessoriesforcombinations extends Module {
         )
             return false;
 
-        include(dirname(__FILE__) . '/init/install_sql.php');
+        include_once(dirname(__FILE__) . '/init/install_sql.php');
         $this->runSql($sql);
 
         return true;
@@ -52,7 +53,7 @@ class accessoriesforcombinations extends Module {
         )
             return false;
 
-        include(dirname(__FILE__) . '/init/uninstall_sql.php');
+        include_once(dirname(__FILE__) . '/init/uninstall_sql.php');
         $this->runSql($sql);
         return true;
     }
