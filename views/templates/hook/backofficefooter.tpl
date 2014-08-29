@@ -22,4 +22,4 @@
 <script type="text/javascript">
     {$addJS|default}
 </script>
-<script type="text/javascript" src="{$module_dir}js/admin_product.js"></script>
+<script type="text/javascript" src="{$module_dir|escape:htmlall}js/admin_product.js"></script>

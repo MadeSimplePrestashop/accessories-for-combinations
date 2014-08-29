@@ -1,6 +1,6 @@
 <section class="page-product-box">
     <div class="afc-case block products_block accessories-block clearfix">
-        <h3 class="page-product-heading">{l s='Accessories'}</h3>
+        <h3 class="page-product-heading">{l s='Accessories' mod='accessoriesforcombinations'}</h3>
         <ul class="afc">
 
         </ul>
@@ -28,7 +28,7 @@
                     $.ajax({
                         dataType: "json",
                         type: 'GET',
-                        url: '{$base_dir}modules/accessoriesforcombinations/ajax-find-accessories.php',
+                        url: '{$base_dir|escape:htmlall}modules/accessoriesforcombinations/ajax-find-accessories.php',
                         data: {
                             ajax: true, id_product: id_product, id_product_attribute: combID
                         }

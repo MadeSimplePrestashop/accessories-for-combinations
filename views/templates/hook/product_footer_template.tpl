@@ -7,7 +7,7 @@
                     <img class="lazyOwl" src="{$link->getImageLink($accessory->link_rewrite, $accessory->images[0]['id_image'], 'home_default')|escape:'html':'UTF-8'}" alt="{$accessory->legend|escape:'html':'UTF-8'}" width="{$homeSize.width}" height="{$homeSize.height}"/>
                 </a>
                 <div class="block_description">
-                    <a href="{$accessoryLink|escape:'html':'UTF-8'}" title="{l s='More'}" class="product_description">
+                    <a href="{$accessoryLink|escape:'html':'UTF-8'}" title="{l s='More' mod='accessoriesforcombinations'}" class="product_description">
                         {$accessory->description_short|strip_tags|truncate:25:'...'}
                     </a>
                 </div>
