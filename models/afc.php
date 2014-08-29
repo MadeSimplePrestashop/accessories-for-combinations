@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Module Accessories for combinations 
+ * @copyright 	kuzmany.biz/prestashop
+ * Reminder: You own a single production license. It would only be installed on one online store (or multistore)
+ */
+
 class afc extends ObjectModel {
 
     public $id_accessory_for_combinations;

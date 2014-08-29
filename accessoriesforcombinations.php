@@ -1,10 +1,13 @@
 <?php
-
 /**
  * Module Accessories for combinations 
+ * 
+ * @author 	kuzmany.biz
  * @copyright 	kuzmany.biz/prestashop
+ * @license 	kuzmany.biz/prestashop
  * Reminder: You own a single production license. It would only be installed on one online store (or multistore)
  */
+
 require_once(dirname(__FILE__) . '/models/afc.php');
 
 class accessoriesforcombinations extends Module {
@@ -13,7 +16,7 @@ class accessoriesforcombinations extends Module {
 
     public function __construct() {
         $this->name = 'accessoriesforcombinations';
-        $this->version = '1.0';
+        $this->version = '1.0.1';
         $this->tab = 'front_office_features';
         $this->author = 'kuzmany.biz/prestashop';
         $this->module_key = 'fb368f630844011a03b5f0a9a2fd75aa';
@@ -37,8 +40,6 @@ class accessoriesforcombinations extends Module {
             return false;
 
         include_once(dirname(__FILE__) . '/init/install_sql.php');
-        $this->runSql($sql);
-
         return true;
     }
 
@@ -54,7 +55,6 @@ class accessoriesforcombinations extends Module {
             return false;
 
         include_once(dirname(__FILE__) . '/init/uninstall_sql.php');
-        $this->runSql($sql);
         return true;
     }
 
@@ -140,15 +140,6 @@ class accessoriesforcombinations extends Module {
     public function hookProductTabContent($params) {
         return $this->load_template();
     }
-
-    private function runSql($sql) {
-        foreach ($sql as $s) {
-            if (!Db::getInstance()->Execute($s)) {
-                return false;
-            }
-        }
-    }
-
 }
 
 ?>

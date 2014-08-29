@@ -10,4 +10,9 @@ CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'accessory_for_combinations` (
   `id_product_attribute_2` int(11) NOT NULL,
   PRIMARY KEY (`id_accessory_for_combinations`)
 ) ENGINE = ' . _MYSQL_ENGINE_ . '  ';
+foreach ($sql as $s) {
+    if (!Db::getInstance()->Execute($s)) {
+        return false;
+    }
+}
 ?>
