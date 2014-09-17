@@ -33,7 +33,7 @@ foreach ($products as $key => $p) {
 
     $product->attributes_names = isset($tmp['without']) ? implode(', ', $tmp['without']) : '';
     $product->attributes_group_names = isset($tmp['with']) ? implode(', ', $tmp['with']) : '';
-
+    $product->allow_oosp = Product::isAvailableWhenOutOfStock($product->out_of_stock);
     $product->images = Image::getImages(Context::getContext()->language->id, $p['id_product_2'], $p['id_product_attribute_2']);
     if (!$product->images)
         $product->images = array(0 => Product::getCover($p['id_product_2']));
@@ -54,7 +54,7 @@ if (empty($accessories)) {
     return;
 }
 
-Context::getContext()->smarty->assign(array('accessories' => $accessories));
+Context::getContext()->smarty->assign(array('accessories' => $accessories, 'static_token' => Tools::getToken(false)));
 //return $this->context->smarty->fetch(dirname(__FILE__).'/views/templates/admin/configuration.tpl');
 echo Tools::jsonEncode(array(
     'response' => 'ok',
