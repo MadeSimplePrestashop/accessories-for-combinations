@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Module Accessories for combinations 
  * 
@@ -23,6 +24,15 @@ foreach ($products as $key => $p) {
     $attributes = $product->getAttributeCombinationsById($p['id_product_attribute_2'], Context::getContext()->language->id);
     //image
     $product->attributes = $attributes;
+    $tmp = array();
+    if ($attributes)
+        foreach ($attributes as $attribute) {
+            $tmp['without'][] = $attribute['attribute_name'];
+            $tmp['with'][] = $attribute['group_name'] . ' ' . $attribute['attribute_name'];
+        }
+
+    $product->attributes_names = isset($tmp['without']) ? implode(', ', $tmp['without']) : '';
+    $product->attributes_group_names = isset($tmp['with']) ? implode(', ', $tmp['with']) : '';
 
     $product->images = Image::getImages(Context::getContext()->language->id, $p['id_product_2'], $p['id_product_attribute_2']);
     if (!$product->images)
