@@ -17,6 +17,10 @@ require_once(dirname(__FILE__) . '/models/afc.php');
 
 $id_product = Tools::getValue('id_product');
 $id_product_attribute = Tools::getValue('id_product_attribute');
+$cache_id = md5(dirname(__FILE__) . 'ipa' . $id_product_attribute . 'ip' . $id_product);
+$compile_id = 'afc-' . $id_product_attribute . '-' . $id_product;
+$template = dirname(__FILE__) . '/views/templates/hook/product_footer_template.tpl';
+
 $products = afc::getProductAttributeAccessories($id_product, $id_product_attribute);
 $accessories = array();
 foreach ($products as $key => $p) {
@@ -53,12 +57,11 @@ if (empty($accessories)) {
     ));
     return;
 }
-
 Context::getContext()->smarty->assign(array('accessories' => $accessories, 'static_token' => Tools::getToken(false)));
-//return $this->context->smarty->fetch(dirname(__FILE__).'/views/templates/admin/configuration.tpl');
+
 echo Tools::jsonEncode(array(
     'response' => 'ok',
-    'template' => Context::getContext()->smarty->fetch(dirname(__FILE__) . '/views/templates/hook/product_footer_template.tpl')
+    'template' => Context::getContext()->smarty->fetch($template)
 ));
 
 die();

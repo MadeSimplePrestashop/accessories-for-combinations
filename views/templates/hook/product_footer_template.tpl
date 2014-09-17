@@ -16,28 +16,27 @@
                 <h5 class="product-name">
                     <a href="{$accessoryLink|escape:'html':'UTF-8'}">
                         {$accessory->name|escape:'html':'UTF-8'}
-                        <br />
-                        {$accessory->attributes_group_names|escape:'html':'UTF-8'}
                     </a>
+                    <br /><small>{$accessory->attributes_group_names|escape:'html':'UTF-8'}</small>
                 </h5>
                 {if $accessory->show_price && !isset($restricted_country_mode) && !$PS_CATALOG_MODE}
-                    <span class="price">
-                        {if $priceDisplay != 1}
+                <span class="price">
+                    {if $priceDisplay != 1}
                         {displayWtPrice p=$accessory->price}{else}{displayWtPrice p=$accessory->price_tax_exc}
-                        {/if}
-                    </span>
+                    {/if}
+                </span>
                 {/if}
             </div>
             <div class="clearfix" style="margin-top:5px">
                 {if !$PS_CATALOG_MODE && ($accessory->allow_oosp || $accessory->quantity > 0)}
-                    <div class="no-print">
-                        <a class="exclusive button ajax_add_to_cart_button" href="{$link->getPageLink('cart', true, NULL, "qty=1&amp;id_product={$accessory->id_product|intval}&amp;token={$static_token}&amp;add")|escape:'html':'UTF-8'}" data-id-product="{$accessory->id_product|intval}" title="{l s='Add to cart'}">
-                            <span>{l s='Add to cart'}</span>
-                        </a>
-                    </div>
+                <div class="no-print">
+                    <a class="exclusive button ajax_add_to_cart_button" href="{$link->getPageLink('cart', true, NULL, "qty=1&amp;id_product={$accessory->id_product|intval}&amp;token={$static_token}&amp;add")|escape:'html':'UTF-8'}" data-id-product="{$accessory->id_product|intval}" title="{l s='Add to cart'}">
+                        <span>{l s='Add to cart'}</span>
+                    </a>
+                </div>
                 {/if}
             </div>
         </li>
         {cycle name='afc' values=',,<div class="clearfix visible-xs"></div>'}
-    {/if}
-{/foreach}
+        {/if}
+        {/foreach}
