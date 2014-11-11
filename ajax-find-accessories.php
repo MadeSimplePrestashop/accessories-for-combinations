@@ -24,8 +24,13 @@ $template = dirname(__FILE__) . '/views/templates/hook/product_footer_template.t
 $products = afc::getProductAttributeAccessories($id_product, $id_product_attribute);
 $accessories = array();
 foreach ($products as $key => $p) {
-    $product = new Product($p['id_product_2'], false, Context::getContext()->language->id, Context::getContext()->shop->id);
-    $attributes = $product->getAttributeCombinationsById($p['id_product_attribute_2'], Context::getContext()->language->id);
+    $productObject = new Product($p['id_product_2'], false, Context::getContext()->language->id, Context::getContext()->shop->id);
+    $product = Tools::jsonDecode(Tools::jsonEncode($productObject),true);
+    $product['id_product'] = $p['id_product_2'];
+    $product['id_product_attribute'] = $p['id_product_attribute_2'];
+    $product = Product::getProductProperties(Context::getContext()->language->id,$product);
+    $product = Tools::jsonDecode(Tools::jsonEncode($product));
+    $attributes = $productObject->getAttributeCombinationsById($p['id_product_attribute_2'], Context::getContext()->language->id);
     //image
     $product->attributes = $attributes;
     $tmp = array();
