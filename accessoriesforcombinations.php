@@ -162,6 +162,15 @@ class accessoriesforcombinations extends Module {
     }
 
     public function hookDisplayShoppingCartFooter($params) {
+
+        //no cart
+        if (!Configuration::get('AFC_CART'))
+            return;
+
+        $this->context->controller->addJqueryPlugin(array('bxslider'));
+        $this->context->controller->addJS($this->_path . 'js/afc-cart.js');
+        $this->context->controller->addCSS($this->_path . 'css/afc-cart.css');
+
         $products = isset($params['products']) ? $params['products'] : array();
         if (!is_array($products) || empty($products))
             return;
@@ -171,13 +180,17 @@ class accessoriesforcombinations extends Module {
             foreach ($get_accessories as $get_accessorie)
                 $accessories[] = $get_accessorie;
         }
-        if(!count($accessories))
+        if (!count($accessories))
             return;
-        
+
+        $afc_cart_nbr = Configuration::get('AFC_CART_NBR');
+        if ($afc_cart_nbr > 0)
+            $accessories = array_slice($accessories, 0, $afc_cart_nbr);
+
         $template = dirname(__FILE__) . '/views/templates/hook/product_footer_template.tpl';
         $this->context->smarty->assign(array('accessories' => $accessories, 'static_token' => Tools::getToken(false)));
         $this->context->smarty->assign(array('html' => $this->context->smarty->fetch($template)));
-        $template = dirname(__FILE__) . '/views/templates/hook/cart.tpl';
+        $template = dirname(__FILE__) . '/views/templates/hook/afc-cart.tpl';
         return $this->context->smarty->fetch($template);
     }
 

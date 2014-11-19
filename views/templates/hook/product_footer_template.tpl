@@ -28,7 +28,7 @@
                     {displayWtPrice p=$accessory->price_without_reduction}
                 </span>
                 {if $accessory->specific_prices->reduction_type == 'percentage'}
-                    <span class="price-percent-reduction">-{$accessory->specific_prices->reduction * 100}%</span>
+                    &nbsp;<span class="price-percent-reduction">-{$accessory->specific_prices->reduction * 100}%</span>
                 {/if}
             {/if}
         </span>
@@ -44,6 +44,6 @@
     {/if}
 </div>
 </li>
-{cycle name='afc' values=',,<div class="clearfix visible-xs"></div>'}
+{*cycle name='afc' values=',,<div class="clearfix visible-xs"></div>'*}
 {/if}
 {/foreach}
