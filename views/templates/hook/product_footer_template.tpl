@@ -20,23 +20,30 @@
                     <br /><small>{$accessory->attributes_group_names|escape:'html':'UTF-8'}</small>
                 </h5>
                 {if $accessory->show_price && !isset($restricted_country_mode) && !$PS_CATALOG_MODE}
-                <span class="price">
-                    {if $priceDisplay != 1}
-                        {displayWtPrice p=$accessory->price}{else}{displayWtPrice p=$accessory->price_tax_exc}
-                    {/if}
+                    <span  class="price product-price">
+                {if !$priceDisplay}{convertPrice price=$accessory->price}{else}{convertPrice price=$accessory->price_tax_exc}{/if}
+            </span>
+            {if isset($accessory->specific_prices) && $accessory->specific_prices && isset($accessory->specific_prices->reduction) && $accessory->specific_prices->reduction > 0}
+                <span class="old-price product-price">
+                    {displayWtPrice p=$accessory->price_without_reduction}
                 </span>
+                {if $accessory->specific_prices->reduction_type == 'percentage'}
+                    <span class="price-percent-reduction">-{$accessory->specific_prices->reduction * 100}%</span>
                 {/if}
-            </div>
-            <div class="clearfix" style="margin-top:5px">
-                {if !$PS_CATALOG_MODE && ($accessory->allow_oosp || $accessory->quantity > 0)}
-                <div class="no-print">
-                    <a class="exclusive button ajax_add_to_cart_button" href="{$link->getPageLink('cart', true, NULL, "qty=1&amp;id_product={$accessory->id_product|intval}&amp;token={$static_token}&amp;add")|escape:'html':'UTF-8'}" data-id-product="{$accessory->id_product|intval}" title="{l s='Add to cart'}">
-                        <span>{l s='Add to cart'}</span>
-                    </a>
-                </div>
-                {/if}
-            </div>
-        </li>
-        {cycle name='afc' values=',,<div class="clearfix visible-xs"></div>'}
-        {/if}
-        {/foreach}
+            {/if}
+        </span>
+    {/if}
+</div>
+<div class="clearfix" style="margin-top:5px">
+    {if !$PS_CATALOG_MODE && ($accessory->allow_oosp || $accessory->quantity > 0)}
+        <div class="no-print">
+            <a class="exclusive button ajax_add_to_cart_button " onclick="ajaxCart.add('{$accessory->id_product|intval}', '{$accessory->id_product_attribute|intval}', false, this); return false;" href="{$link->getPageLink('cart', true, NULL, "qty=1&amp;id_product={$accessory->id_product|intval}&amp;id_product_attribute={$accessory->id_product_attribute|intval}&amp;token={$static_token}&amp;add")|escape:'html':'UTF-8'}" data-id-product="{$accessory->id_product|intval}" data-id-product-attribute="{$accessory->id_product_attribute|intval}" title="{l s='Add to cart'}">
+                <span>{l s='Add to cart'}</span>
+            </a>
+        </div>
+    {/if}
+</div>
+</li>
+{cycle name='afc' values=',,<div class="clearfix visible-xs"></div>'}
+{/if}
+{/foreach}

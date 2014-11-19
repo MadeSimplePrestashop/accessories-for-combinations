@@ -162,6 +162,23 @@ class accessoriesforcombinations extends Module {
     }
 
     public function hookDisplayShoppingCartFooter($params) {
+        $products = isset($params['products']) ? $params['products'] : array();
+        if (!is_array($products) || empty($products))
+            return;
+        $accessories = array();
+        foreach ($products as $product) {
+            $get_accessories = afc::getAccessories($product['id_product'], $product['id_product_attribute'], $products);
+            foreach ($get_accessories as $get_accessorie)
+                $accessories[] = $get_accessorie;
+        }
+        if(!count($accessories))
+            return;
+        
+        $template = dirname(__FILE__) . '/views/templates/hook/product_footer_template.tpl';
+        $this->context->smarty->assign(array('accessories' => $accessories, 'static_token' => Tools::getToken(false)));
+        $this->context->smarty->assign(array('html' => $this->context->smarty->fetch($template)));
+        $template = dirname(__FILE__) . '/views/templates/hook/cart.tpl';
+        return $this->context->smarty->fetch($template);
     }
 
     public function hookActionProductUpdate($params) {
