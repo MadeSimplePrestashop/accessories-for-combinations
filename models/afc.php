@@ -64,6 +64,7 @@ class afc extends ObjectModel {
             $product = Tools::jsonDecode(Tools::jsonEncode($productObject), true);
             $product['id_product'] = $p['id_product_2'];
             $product['id_product_attribute'] = $p['id_product_attribute_2'];
+            $product['id_product_attribute_parent'] = $id_product_attribute;
             $product = Product::getProductProperties(Context::getContext()->language->id, $product);
             $product = Tools::jsonDecode(Tools::jsonEncode($product));
             $attributes = $productObject->getAttributeCombinationsById($p['id_product_attribute_2'], Context::getContext()->language->id);

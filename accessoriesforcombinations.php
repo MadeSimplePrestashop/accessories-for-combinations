@@ -250,6 +250,10 @@ class accessoriesforcombinations extends Module {
         if (Cache::retrieve(__CLASS__ . 'c'))
             return;
         Cache::store(__CLASS__ . 'c', 1);
+        $this->context->controller->addJqueryPlugin(array('bxslider'));
+        $this->context->controller->addJS($this->_path . 'js/imagesloaded.pkgd.min.js');
+        $this->context->controller->addJS($this->_path . 'js/afc-product.js');
+        $this->context->controller->addCSS($this->_path . 'css/afc-product.css');
         return $this->display(__FILE__, 'product_tab_content.tpl');
     }
 

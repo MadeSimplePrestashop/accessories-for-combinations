@@ -1,0 +1,9 @@
+/* accessories  */
+
+.accessories-block .product-price,.accessories-block .price-percent-reduction {
+    font-size:13px;
+    line-height:1.5em;
+}
+
+.accessories-block .afc-template  {margin-bottom:10px;}
+
