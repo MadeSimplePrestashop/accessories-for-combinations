@@ -28,7 +28,7 @@
                     {displayWtPrice p=$accessory->price_without_reduction}
                 </span>
                 {if $accessory->specific_prices->reduction_type == 'percentage'}
-                    &nbsp;<span class="price-percent-reduction">-{$accessory->specific_prices->reduction * 100}%</span>
+                    &nbsp;<span class="price-percent-reduction">-{$accessory->specific_prices->reduction|floatval * 100}%</span>
                 {/if}
             {/if}
         </span>
@@ -37,8 +37,8 @@
 <div class="clearfix" style="margin-top:5px">
     {if !$PS_CATALOG_MODE && ($accessory->allow_oosp || $accessory->quantity > 0)}
         <div class="no-print">
-            <a class="exclusive button ajax_add_to_cart_button " onclick="ajaxCart.add('{$accessory->id_product|intval}', '{$accessory->id_product_attribute|intval}', false, this); return false;" href="{$link->getPageLink('cart', true, NULL, "qty=1&amp;id_product={$accessory->id_product|intval}&amp;id_product_attribute={$accessory->id_product_attribute|intval}&amp;token={$static_token}&amp;add")|escape:'html':'UTF-8'}" data-id-product="{$accessory->id_product|intval}" data-id-product-attribute="{$accessory->id_product_attribute|intval}" title="{l s='Add to cart'}">
-                <span>{l s='Add to cart'}</span>
+            <a class="exclusive button ajax_add_to_cart_button " onclick="ajaxCart.add('{$accessory->id_product|intval}', '{$accessory->id_product_attribute|intval}', false, this); return false;" href="{$link->getPageLink('cart', true, NULL, "qty=1&amp;id_product={$accessory->id_product|intval}&amp;id_product_attribute={$accessory->id_product_attribute|intval}&amp;token={$static_token}&amp;add")|escape:'html':'UTF-8'}" data-id-product="{$accessory->id_product|intval}" data-id-product-attribute="{$accessory->id_product_attribute|intval}" title="{l s='Add to cart' mod='accessoriesforcombinations'}">
+                <span>{l s='Add to cart' mod='accessoriesforcombinations'}</span>
             </a>
         </div>
     {/if}

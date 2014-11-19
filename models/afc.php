@@ -52,7 +52,7 @@ class afc extends ObjectModel {
     public static function getAccessories($id_product, $id_product_attribute, $blocklist = array()) {
         $products = self::getProductAttributeAccessories($id_product, $id_product_attribute);
         $accessories = array();
-        foreach ($products as $key => $p) {
+        foreach ($products as $p) {
             $block = false;
             foreach ($blocklist as $blockproduct)
                 if ($p['id_product_2'] == $blockproduct['id_product'] && $p['id_product_attribute_2'] == $blockproduct['id_product_attribute'])

@@ -1,17 +1,14 @@
 $(document).ready(function () {
-    // 
-// **** MAGIC LINES *** 
+    // **** MAGIC LINE *** 
     // remove comment and move to whenever you want :)
     //$('.afc-case').detach().appendTo('.pb-left-column');
-    
+
     var temp_updateDisplay = updateDisplay;
     var cache = new Array()
     updateDisplay = function () {
         //event.preventDefault();
         temp_updateDisplay();
         $('.afc-case,.afc-template').hide();
-        console.log('test');
-        console.log(productHasAttributes);
         if (typeof productHasAttributes != 'undefined' && productHasAttributes == false)
             return;
         if ($('.afc-template-' + combID).length) {
