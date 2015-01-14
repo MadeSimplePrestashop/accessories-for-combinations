@@ -1,11 +1,13 @@
 $(document).ready(function () {
     // **** MAGIC LINE *** 
     // remove comment and move to whenever you want :)
-    //$('.afc-case').detach().appendTo('.pb-left-column');
-
+    if (typeof afc_web_site_element != 'undefined')
+        $('.afc-case').detach().appendTo(afc_web_site_element);
+    
     var temp_updateDisplay = updateDisplay;
     var cache = new Array()
     updateDisplay = function () {
+        var combID = $('#idCombination').val();
         //event.preventDefault();
         temp_updateDisplay();
         $('.afc-case,.afc-template').hide();

@@ -8,15 +8,16 @@
  * @license 	kuzmany.biz/prestashop
  * Reminder: You own a single production license. It would only be installed on one online store (or multistore)
  */
-
 if (!defined('_PS_VERSION_'))
-	exit;
+    exit;
 
 require_once(dirname(__FILE__) . '/models/afc.php');
 
 class accessoriesforcombinations extends Module {
 
     const separator = ', ';
+
+    public $product_hooks = array('extraLeft', 'extraRight', 'productActions', 'productFooter', 'productTabContent');
 
     public function __construct() {
         $this->name = 'accessoriesforcombinations';
@@ -25,11 +26,14 @@ class accessoriesforcombinations extends Module {
         $this->module_key = 'fb368f630844011a03b5f0a9a2fd75aa';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.1';
+        $this->version = '1.2';
         parent::__construct();
 
         $this->displayName = $this->l('Accessories for combinations');
         $this->description = $this->l('Manage accessories for combinations');
+
+        if (function_exists('curl_init') == false)
+            $this->warning = $this->l('To be able to use this module, please activate cURL (PHP extension).');
     }
 
     public function install() {
@@ -39,10 +43,7 @@ class accessoriesforcombinations extends Module {
             return false;
 
         if (
-                !$this->registerHook('extraRight')
-                OR ! $this->registerHook('actionProductUpdate')
-                OR ! $this->registerHook('displayBackOfficeFooter')
-                OR ! $this->registerHook('displayShoppingCartFooter')
+                !$this->registerHook('extraLeft') || !$this->registerHook('extraRight') || !$this->registerHook('productActions') || !$this->registerHook('productExtraLeft') || !$this->registerHook('productFooter') || !$this->registerHook('productTab') || !$this->registerHook('productTab') || !$this->registerHook('productTabContent') || !$this->registerHook('actionProductUpdate') || !$this->registerHook('displayBackOfficeFooter') || !$this->registerHook('displayShoppingCartFooter')
         )
             return false;
         Configuration::updateValue('AFC_CART_NBR', 0);
@@ -55,9 +56,7 @@ class accessoriesforcombinations extends Module {
             return false;
 
         if (
-                !$this->registerHook('extraRight')
-                OR ! $this->unregisterHook('actionProductUpdate')
-                OR ! $this->unregisterHook('displayBackOfficeFooter')
+                !$this->unregisterHook('extraRight') || !$this->unregisterHook('productActions') || !$this->unregisterHook('productExtraLeft') || !$this->unregisterHook('productFooter') || !$this->unregisterHook('productTab') || !$this->unregisterHook('productTab') || !$this->unregisterHook('productTabContent') || !$this->unregisterHook('actionProductUpdate') || !$this->unregisterHook('displayBackOfficeFooter')
         )
             return false;
 
@@ -66,7 +65,6 @@ class accessoriesforcombinations extends Module {
     }
 
     public function getContent() {
-
         $this->_postProcess();
         return $this->renderForm();
     }
@@ -135,6 +133,26 @@ class accessoriesforcombinations extends Module {
                         'label' => $this->l('Number of accessories in cart'),
                         'hint' => $this->l('Use 0 for unlimited products.'),
                     ),
+                    array(
+                        'type' => 'select',
+                        'label' => 'Select position in product detail',
+                        'name' => 'AFC_HOOK',
+                        'options' => array(
+                            'query' => array(
+                                array('id' => 'extraRight', 'name' => 'extraRight'),
+                                array('id' => 'productFooter', 'name' => 'productFooter'),
+                                array('id' => 'productTab', 'name' => 'productTab'),
+                                array('id' => 'productTabContent', 'name' => 'productTabContent'),
+                            ),
+                            'id' => 'id',
+                            'name' => 'name'
+                        ),
+                    ),
+                    array(
+                        'type' => 'free',
+                        'label' => $this->l('Or pick possition live on page '),
+                        'name' => 'AFC_POSITION',
+                    ),
                 ),
                 'submit' => array(
                     'title' => $this->l('Save'),
@@ -148,9 +166,30 @@ class accessoriesforcombinations extends Module {
      * Set values for the inputs.
      */
     protected function getConfigFormValues() {
+        $link = new Link;
+        $this->context->controller->addJS($this->getPathUri() . '/js/admin_product.js');
+        $product_list = Product::getProducts((int) Context::getContext()->language->id, 0, 10, 'p.id_product', 'asc', false, true);
+        $product_list_options_array = array();
+        if (empty($product_list) == false)
+            foreach ($product_list as $product)
+                $product_list_options_array[] = '<option value="' . $link->getproductLink($product['id_product'], $product['link_rewrite'], Category::getLinkRewrite((int) ($product['id_category_default']), (int) Context::getContext()->language->id)) . '">' . $product['name'] . '</option>';
+        $afc_position = array();
+        $afc_position[] = '<select class="col-sm-3">';
+        $afc_position[] = implode('', $product_list_options_array);
+        $afc_position[] = '</select>';
+        $href = '?afc_live_edit_token=' . $this->getLiveEditToken() . '&id_employee=' . $this->context->employee->id;
+        $afc_position[] = '<a onclick="if(!confirm(\'' . $this->l('Web page opens in a mode for direct selection position through the web site element picker. Do you want continue?') . '\')) return false"  target="_blank" data-href="' . $href . '" id="select_position"><button   type="button" class="btn btn-default" >' . $this->l('select web site element') . '</button></a>';
+        $afc_position[] = '<a onclick="if(!confirm(\'' . $this->l('Do not forget to save changes before opening a product') . '\')) return false" target="_blank"  id="afc_open"><button   type="button" class="btn btn-default" >' . $this->l('show product page') . '</button></a>';
+        $afc_position[] = '<div class="col-sm-4">
+            <input type="text" value="' . Configuration::get('AFC_POSITION') . '" name="AFC_POSITION" id="AFC_POSITION">
+        </div>';
+
+//$afc_position = 
         return array(
             'AFC_CART' => Configuration::get('AFC_CART', false),
             'AFC_CART_NBR' => Configuration::get('AFC_CART_NBR', 0),
+            'AFC_HOOK' => Configuration::get('AFC_HOOK'),
+            'AFC_POSITION' => implode('', $afc_position),
         );
     }
 
@@ -167,7 +206,7 @@ class accessoriesforcombinations extends Module {
 
     public function hookDisplayShoppingCartFooter($params) {
 
-        //no cart
+//no cart
         if (!Configuration::get('AFC_CART'))
             return;
 
@@ -199,7 +238,7 @@ class accessoriesforcombinations extends Module {
     }
 
     public function hookActionProductUpdate($params) {
-        //prevent duplicate
+//prevent duplicate
         if (Cache::retrieve(__FUNCTION__ . 'c'))
             return;
 
@@ -250,31 +289,50 @@ class accessoriesforcombinations extends Module {
         return $this->display(__FILE__, 'backofficefooter.tpl');
     }
 
-    private function load_template() {
+    private function load_template($hook_func) {
+
+        $hook = lcfirst(str_replace('hook', '', $hook_func));
         if (Cache::retrieve(__CLASS__ . 'c'))
             return;
+
+        if (Configuration::get('AFC_HOOK') && Configuration::get('AFC_HOOK') != $hook)
+            return;
+
         Cache::store(__CLASS__ . 'c', 1);
+
+        if (Configuration::get('AFC_POSITION'))
+            Media::addJsDef(array('afc_web_site_element' => Configuration::get('AFC_POSITION')));
+
         $this->context->controller->addJqueryPlugin(array('bxslider'));
         $this->context->controller->addJS($this->_path . 'js/imagesloaded.pkgd.min.js');
         $this->context->controller->addJS($this->_path . 'js/afc-product.js');
         $this->context->controller->addCSS($this->_path . 'css/afc-product.css');
-        return $this->display(__FILE__, 'product_tab_content.tpl');
+        $html = '';
+        if (Tools::getValue('afc_live_edit_token') && Tools::getValue('afc_live_edit_token') == $this->getLiveEditToken() && Tools::getIsset('id_employee')) {
+            $this->context->controller->addCSS($this->getPathUri() . '/css/inspector.css', 'all');
+//prevent older PS
+//$this->context->controller->addJS($this->getPathUri() . '/js/firebug/build/firebug-lite.js#startOpened', false);
+            $html = '<script type="text/javascript" src="' . $this->_path . 'js/firebug/build/firebug-lite.js#startOpened"></script>';
+            $this->context->controller->addJS($this->getPathUri() . '/js/inspector.js');
+        }
+
+        return $html . $this->display(__FILE__, 'product_tab_content.tpl');
     }
 
     public function hookProductActions($params) {
-        return $this->load_template();
+        return $this->load_template(__FUNCTION__);
     }
 
     public function hookExtraRight($params) {
-        return $this->load_template();
+        return $this->load_template(__FUNCTION__);
     }
 
     public function hookExtraLeft($params) {
-        return $this->load_template();
+        return $this->load_template(__FUNCTION__);
     }
 
     public function hookProductFooter($params) {
-        return $this->load_template();
+        return $this->load_template(__FUNCTION__);
     }
 
     public function hookProductTab($params) {
@@ -282,7 +340,13 @@ class accessoriesforcombinations extends Module {
     }
 
     public function hookProductTabContent($params) {
-        return $this->load_template();
+        return $this->load_template(__FUNCTION__);
+    }
+
+    public function getLiveEditToken() {
+        return Tools::getAdminToken($this->name . (int) Tab::getIdFromClassName($this->name)
+                        . (is_object(Context::getContext()->employee) ? (int) Context::getContext()->employee->id :
+                                Tools::getValue('id_employee')));
     }
 
 }
