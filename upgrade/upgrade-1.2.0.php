@@ -27,7 +27,7 @@ function upgrade_module_1_2_0($module) {
             continue;
         foreach ($hl as $h) {
             foreach ($module->product_hooks as $product_hook) {
-                if (strpos($hook_name, strtolower($product_hook)) !== false && $h['module'] == $module->name) {
+                if (strpos($hook_name, Tools::strtolower($product_hook)) !== false && $h['module'] == $module->name) {
                     $is = $product_hook;
                 }
             }

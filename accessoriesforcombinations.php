@@ -26,7 +26,7 @@ class accessoriesforcombinations extends Module {
         $this->module_key = 'fb368f630844011a03b5f0a9a2fd75aa';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.2';
+        $this->version = '1.2.1';
         parent::__construct();
 
         $this->displayName = $this->l('Accessories for combinations');
@@ -47,6 +47,7 @@ class accessoriesforcombinations extends Module {
         )
             return false;
         Configuration::updateValue('AFC_CART_NBR', 0);
+        Configuration::updateValue('AFC_HOOK', 'productTabContent');
         include_once(dirname(__FILE__) . '/init/install_sql.php');
         return true;
     }
@@ -150,7 +151,7 @@ class accessoriesforcombinations extends Module {
                     ),
                     array(
                         'type' => 'free',
-                        'label' => $this->l('Or pick possition live on page '),
+                        'label' => $this->l('Select position from website'),
                         'name' => 'AFC_POSITION',
                     ),
                 ),
@@ -178,11 +179,11 @@ class accessoriesforcombinations extends Module {
         $afc_position[] = implode('', $product_list_options_array);
         $afc_position[] = '</select>';
         $href = '?afc_live_edit_token=' . $this->getLiveEditToken() . '&id_employee=' . $this->context->employee->id;
-        $afc_position[] = '<a onclick="if(!confirm(\'' . $this->l('Web page opens in a mode for direct selection position through the web site element picker. Do you want continue?') . '\')) return false"  target="_blank" data-href="' . $href . '" id="select_position"><button   type="button" class="btn btn-default" >' . $this->l('select web site element') . '</button></a>';
-        $afc_position[] = '<a onclick="if(!confirm(\'' . $this->l('Do not forget to save changes before opening a product') . '\')) return false" target="_blank"  id="afc_open"><button   type="button" class="btn btn-default" >' . $this->l('show product page') . '</button></a>';
         $afc_position[] = '<div class="col-sm-4">
-            <input type="text" value="' . Configuration::get('AFC_POSITION') . '" name="AFC_POSITION" id="AFC_POSITION">
+            <input placeholder="'.$this->l('Your selected elements').'" type="text" value="' . Configuration::get('AFC_POSITION') . '" name="AFC_POSITION" id="AFC_POSITION">
         </div>';
+        $afc_position[] = '<a onclick="if(!confirm(\'' . $this->l('Web page opens in a mode for direct selection position through the web site element picker. Do you want continue?') . '\')) return false"  target="_blank" data-href="' . $href . '" id="select_position"><button   type="button" class="btn btn-default" >' . $this->l('select web site element') . '</button></a>';
+        $afc_position[] = ' <a onclick="if(!confirm(\'' . $this->l('Do not forget to save changes before opening a product') . '\')) return false" target="_blank"  id="afc_open"><button   type="button" class="btn btn-default" >' . $this->l('show selected product page') . '</button></a>';
 
 //$afc_position = 
         return array(
@@ -283,6 +284,7 @@ class accessoriesforcombinations extends Module {
             var afc_accessories = ' . Tools::jsonEncode($attrs) . ';
              var baseUri = "' . __PS_BASE_URI__ . '";
              var baseDir = "' . __PS_BASE_URI__ . '";
+             var is_shop = "'.((Shop::isFeatureActive()  && Shop::getContext() != Shop::CONTEXT_ALL && Shop::getContext() != Shop::CONTEXT_GROUP) ?' ' . Context::getContext()->shop->id . '':'0').'";
              var afc_token = "' . sha1(_COOKIE_KEY_ . $this->module->name) . '";'
         ));
 

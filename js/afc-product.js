@@ -2,7 +2,8 @@ $(document).ready(function () {
     // **** MAGIC LINE *** 
     // remove comment and move to whenever you want :)
     if (typeof afc_web_site_element != 'undefined')
-        $('.afc-case').detach().appendTo(afc_web_site_element);
+        $(afc_web_site_element).after($('.afc-case').detach());
+    
     
     var temp_updateDisplay = updateDisplay;
     var cache = new Array()

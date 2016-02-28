@@ -1,11 +1,11 @@
 $(document).ready(function () {
 
     $('#select_position').click(function () {
-        $(this).attr('href', $(this).prev().val() + '' + $(this).data('href'));
+        $(this).attr('href', $(this).prev().prev().val() + '' + $(this).data('href'));
     })
 
     $('#afc_open').click(function () {
-        $(this).attr('href', $(this).prev().prev().val());
+        $(this).attr('href', $(this).prev().prev().prev().val());
     })
 
     $.fn.watch = function (id, fn) {
@@ -60,17 +60,18 @@ $(document).ready(function () {
         if ($('#accessoriesforcombinations_form').is(':hidden')) {
             $('#ResetBtn').closest('.panel-footer').before($('#accessoriesforcombinations_form').detach());
             $('#accessoriesforcombinations_form').show();
-            $('#accessoriesforcombinations_form .afc-line:not(:last)').remove();
-            var id_product_attribute = $('#id_product_attribute').val();
-            var obj = $('.afc_id_product_search:last');
-            var line = obj.parents('.afc-line:first');
-            $.each(afc_accessories[id_product_attribute], function (i, item) {
-                var obj2 = line.clone().prependTo(obj.parents('.afc-form:first'));
-                obj2.find('.afc_id_product_search').removeClass('ac_input').val(item.name);
-                obj2.find('.afc_id_product').val(item.id_product)
-                addAfcProduct(item.id_product, item.name, obj2.find('.afc_id_product_search'), item.id_product_attribute)
-            });
         }
+        $('#accessoriesforcombinations_form .afc-line:not(:last)').remove();
+        var id_product_attribute = $('#id_product_attribute').val();
+        var obj = $('.afc_id_product_search:last');
+        var line = obj.parents('.afc-line:first');
+        $.each(afc_accessories[id_product_attribute], function (i, item) {
+            var obj2 = line.clone().prependTo(obj.parents('.afc-form:first'));
+            obj2.find('.afc_id_product_search').removeClass('ac_input').val(item.name);
+            obj2.find('.afc_id_product').val(item.id_product)
+            addAfcProduct(item.id_product, item.name, obj2.find('.afc_id_product_search'), item.id_product_attribute)
+        });
+
     });
 
     $(document).on('click', '.afc_product_remove', function (e) {
@@ -84,7 +85,7 @@ $(document).ready(function () {
     })
 
     $(document).on('focus', '.afc_id_product_search:not(.ac_input)', function (e) {
-        $(this).autocomplete('ajax_products_list.php?excludeIds=' + id_product, {
+        $(this).autocomplete('../modules/accessoriesforcombinations/ajax_products_list.php?id_shop=' + is_shop + '&excludeIds=' + id_product, {
             minChars: 2,
             autoFill: true,
             max: 20,
